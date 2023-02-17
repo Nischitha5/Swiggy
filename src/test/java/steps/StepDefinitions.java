@@ -1,7 +1,5 @@
 package steps;
 
-import io.cucumber.java.Before;
-import io.cucumber.java.Scenario;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -11,9 +9,6 @@ import org.testng.Assert;
 import pages.HomePage;
 import utils.BrowserManager;
 import utils.EnvProps;
-import utils.TestDataReader;
-
-import java.util.HashMap;
 
 public class StepDefinitions {
 
@@ -22,16 +17,11 @@ public class StepDefinitions {
 
     String url;
 
-    HashMap<String, String> data;
-    Scenario scenario;
+
     public StepDefinitions(BrowserManager browserManager){
         this.driver=browserManager.getDriver();
     }
 
-    @Before(order = 1)
-    public void before(Scenario scenario){
-        this.scenario=scenario;
-    }
 
     //background
     @Given("the user navigates to the swiggy landing page")
@@ -39,7 +29,7 @@ public class StepDefinitions {
         homePage = new HomePage(driver);
         url = EnvProps.getValue("url");
         driver.get(url);
-        data = TestDataReader.getData(scenario.getName());
+
     }
 
     @When("the user enters the delivery location")
@@ -56,7 +46,7 @@ public class StepDefinitions {
 
     //testcase1
     @When("the user clicks on the search icon")
-    public void theUserClicksOnTheSearchIcon() throws InterruptedException {
+    public void theUserClicksOnTheSearchIcon(){
         homePage.getSearchIcon().click();
     }
 
