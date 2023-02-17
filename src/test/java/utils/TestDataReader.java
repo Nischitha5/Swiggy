@@ -8,7 +8,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
-
 public class TestDataReader {
     private static HashMap<String, HashMap<String, String>> data;
 
