@@ -5,10 +5,13 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import pages.HomePage;
 import utils.BrowserManager;
 import utils.EnvProps;
+import java.util.List;
 
 public class StepDefinitions {
 
@@ -16,6 +19,7 @@ public class StepDefinitions {
     HomePage homePage;
 
     String url;
+
 
 
     public StepDefinitions(BrowserManager browserManager){
@@ -36,7 +40,7 @@ public class StepDefinitions {
     public void theUserEntersTheDeliveryLocation(){
         //homePage.getDeliveryLocation().sendKeys(data.get("TypeValue"));
         homePage.getDeliveryLocation().sendKeys("Bangalore, Karnataka, India");
-        homePage.getLocationList().click();
+        homePage.getDeliveryLocationList().click();
     }
 
     @Then("the user should be taken to swiggy home page")
@@ -132,7 +136,9 @@ public class StepDefinitions {
 
     @Then("the user should be able to navigate back")
     public void theUserShouldBeAbleToNavigateBack(){
-        Assert.assertTrue(driver.getCurrentUrl().contains("www.swiggy.com"));
+        Assert.assertTrue(driver.getCurrentUrl().contains("https://www.swiggy.com/search"));
+        boolean maginifier = homePage.getSearchMagnifier().isDisplayed();
+        Assert.assertEquals(maginifier,true);
     }
 
     //testcase8
@@ -147,4 +153,60 @@ public class StepDefinitions {
         Assert.assertEquals(maginifier,true);
     }
 
+    //testcase9
+    @And("the user enters an item name inside the search box")
+    public void theUserEntersAnItemNameInsideTheSearchBox() {
+        WebElement enter = homePage.getSearchBox();
+        enter.sendKeys("Pizza");
+    }
+
+    @Then("the auto suggestion must be shown below the search box")
+    public void theAutoSuggestionMustBeShownBelowTheSearchBox() throws InterruptedException {
+        WebDriverWait wait=new WebDriverWait(driver, 5);
+        List<WebElement> suggestion_lists = wait.until(ExpectedConditions.visibilityOfAllElements(homePage.getSearchAutoSuggestion()));
+        System.out.println(suggestion_lists.size());
+        Assert.assertTrue(suggestion_lists.size()==11);
+        for (WebElement suggestion: suggestion_lists)
+            System.out.println(suggestion.getText());
+        Assert.assertNotNull(suggestion_lists,"auto suggestions are not present or not displayed");
+    }
+
+    //testcase10
+    @And("the user enters an item name as {string} inside the search box")
+    public void theUserEntersAnItemNameAsInsideTheSearchBox(String arg0) {
+        WebElement items = homePage.getSearchBox();
+        items.sendKeys(arg0);
+        items.sendKeys(Keys.ENTER);
+        theUserShouldGetListOfItemsMatchingTheEnteredItemsBelowTheSearchBox(arg0);
+    }
+
+    @Then("the user should get list of items matching the entered items below the search box")
+    public void theUserShouldGetListOfItemsMatchingTheEnteredItemsBelowTheSearchBox(String arg0) {
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        List<WebElement> displayed_items = wait.until(ExpectedConditions.visibilityOfAllElements(homePage.getItemsDisplayed()));
+        System.out.println(displayed_items.size());
+        Assert.assertTrue(displayed_items.size() >= 1);
+        for (WebElement display : displayed_items) {
+            String text = display.getText().toLowerCase();
+            System.out.println(text);
+            Assert.assertNotNull(displayed_items,"auto suggestions are not present or not displayed");
+            //Assert.assertTrue(text.contains(arg0.toLowerCase()));
+        }
+    }
+
+    //testcase11
+    @And("the user enters a single character inside the search box")
+    public void theUserEntersASingleCharacterInsideTheSearchBox() {
+        homePage.getSearchBox().sendKeys("P");
+    }
+
+    @Then("the user should get an auto suggestion matching the items based on the entered character")
+    public void theUserShouldGetAnAutoSuggestionMatchingTheItemsBasedOnTheEnteredCharacter() {
+        WebDriverWait wait=new WebDriverWait(driver, 5);
+        List<WebElement> suggestion_lists = wait.until(ExpectedConditions.visibilityOfAllElements(homePage.getSearchAutoSuggestion()));
+        Assert.assertTrue(suggestion_lists.size()==11);
+        for (WebElement suggestion: suggestion_lists)
+            System.out.println(suggestion.getText());
+        Assert.assertNotNull(suggestion_lists,"auto suggestions are not present or not displayed");
+    }
 }

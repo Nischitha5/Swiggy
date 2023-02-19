@@ -6,6 +6,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 import javax.xml.xpath.XPath;
+import java.util.List;
 
 public class HomePage {
     private WebDriver driver;
@@ -22,7 +23,7 @@ public class HomePage {
     WebElement deliveryLocation;
 
     @FindBy(xpath = "//span[@class=\"_2W-T9\"][1]")
-    WebElement locationList;
+    WebElement deliveryLocationList;
 
     @FindBy(className = "_1QBzC")
     WebElement searchBoxAlignment;
@@ -45,6 +46,12 @@ public class HomePage {
     @FindBy(className = "_2p8XD")
     WebElement searchMagnifier;
 
+    @FindBy(xpath = "//div/button[@class=\"_37IIF\"]")
+    List<WebElement> searchAutoSuggestion;
+
+    @FindBy(xpath = "//h3[@class=\"styles_itemNameText__3ZmZZ\"]")
+    List<WebElement> itemsDisplayed;
+
     public WebElement getSearchBox() {
         return searchBox;
     }
@@ -54,8 +61,8 @@ public class HomePage {
     public WebElement getDeliveryLocation() {
         return deliveryLocation;
     }
-    public WebElement getLocationList() {
-        return locationList;
+    public WebElement getDeliveryLocationList() {
+        return deliveryLocationList;
     }
     public WebElement getSearchBoxAlignment() {
         return searchBoxAlignment;
@@ -74,5 +81,11 @@ public class HomePage {
     }
     public WebElement getSearchMagnifier() {
         return searchMagnifier;
+    }
+    public List<WebElement> getSearchAutoSuggestion() {
+        return searchAutoSuggestion;
+    }
+    public List<WebElement> getItemsDisplayed() {
+        return itemsDisplayed;
     }
 }
