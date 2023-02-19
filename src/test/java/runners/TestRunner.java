@@ -9,7 +9,8 @@ import org.testng.annotations.DataProvider;
                 "json:target/cucumber-reports.json"}, monochrome = true, tags = "@smoke")
 public class TestRunner extends AbstractTestNGCucumberTests {
 
-    @DataProvider(parallel = true)
+    //(parallel=true)
+    @DataProvider
     public Object[][] scenarios(){
         return super.scenarios();
     }
