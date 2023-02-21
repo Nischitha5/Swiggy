@@ -21,7 +21,7 @@ private static HashMap<String, HashMap<String, String>> data;
         if (workbook == null) {
             FileInputStream fileInputStream = null;
             try {
-                fileInputStream = new FileInputStream("src/test/resources/cucumber.xlsx");
+                fileInputStream = new FileInputStream("src/test/resources/swiggy_data.xlsx");
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }
