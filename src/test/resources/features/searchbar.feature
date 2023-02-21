@@ -58,7 +58,7 @@ Background: User has to enter delivery location
       |panner 65|
       |Bi       |
       |65       |
-  @smoke
+
   Scenario: Verify that when the user enters single character then the auto suggestion is shown
     When the user clicks on the search
     And the user enters a single character inside the search box
