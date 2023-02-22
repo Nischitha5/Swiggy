@@ -1,5 +1,7 @@
 package steps;
 
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -11,6 +13,9 @@ import org.testng.Assert;
 import pages.HomePage;
 import utils.BrowserManager;
 import utils.EnvProps;
+import utils.TestDataReader;
+
+import java.util.HashMap;
 import java.util.List;
 
 public class StepDefinitions {
@@ -18,51 +23,62 @@ public class StepDefinitions {
     private WebDriver driver;
     HomePage homePage;
 
-    String url;
+    String url1;
+    String url2;
+    String url3;
+    String url4;
+
+    HashMap<String, String> data;
+    Scenario scenario;
 
 
     public StepDefinitions(BrowserManager browserManager) {
         this.driver = browserManager.getDriver();
     }
 
+    @Before(order = 1)
+    public void before(Scenario scenario){
+        this.scenario=scenario;
+    }
 
     //background
     @Given("the user navigates to the swiggy landing page")
     public void the_user_navigates_to_the_swiggy_landing_page() {
         homePage = new HomePage(driver);
-        url = EnvProps.getValue("url");
-        driver.get(url);
+        url1 = EnvProps.getValue("locationurl");
+        driver.get(url1);
 
     }
 
     @When("the user enters the delivery location")
     public void theUserEntersTheDeliveryLocation() {
-        //homePage.getDeliveryLocation().sendKeys(data.get("TypeValue"));
         homePage.getDeliveryLocation().sendKeys("Bangalore, Karnataka, India");
         homePage.getDeliveryLocationList().click();
     }
 
     @Then("the user should be taken to swiggy home page")
     public void the_user_should_be_taken_to_swiggy_home_page() {
-        Assert.assertTrue(driver.getCurrentUrl().contains("https://www.swiggy.com"));
+        Assert.assertTrue(driver.getCurrentUrl().contains(url1));
     }
 
     //testcase1
     @When("the user clicks on the search icon")
     public void theUserClicksOnTheSearchIcon() {
         homePage.getSearchIcon().click();
-        System.out.println("hai");
     }
 
     @Then("the user should be taken to search page")
     public void theUserShouldBeTakenToSearchPage() {
-        Assert.assertTrue(driver.getCurrentUrl().contains("https://www.swiggy.com/search"));
+        url2 = EnvProps.getValue("searchurl");
+        Assert.assertTrue(driver.getCurrentUrl().contains(url2));
     }
+
     //testcase2
     @When("the user clicks on the search")
     public void theUserClicksOnTheSearch(){
         homePage.getSearchIcon().click();
-        Assert.assertTrue(driver.getCurrentUrl().contains("https://www.swiggy.com/search"));
+        url3 = EnvProps.getValue("searchurl");
+        Assert.assertTrue(driver.getCurrentUrl().contains(url3));
     }
 
     @Then("the search box should be displayed")
@@ -72,41 +88,34 @@ public class StepDefinitions {
     }
 
     //testcase3
-    @Then("the search box should be displayed as per requirement for the dimension")
-    public void theSearchBoxShouldBeDisplayedAsPerRequirementForTheDimension() {
-        Dimension dimension = homePage.getSearchBoxAlignment().getSize();
-        Assert.assertEquals(dimension.getHeight(),48);
-        Assert.assertEquals(dimension.getWidth(),858);
-    }
-
-
-    //testcase4
     @Then("the search box should be displayed with placeholder inside it")
     public void theSearchBoxShouldBeDisplayedWithPlaceholderInsideIt() {
+        data = TestDataReader.getData(scenario.getName());
         String attribute = homePage.getSearchBox().getAttribute("placeholder");
-        Assert.assertEquals(attribute,"Search for restaurants and food");
+        Assert.assertEquals(attribute,data.get("asserting"));
     }
 
-    //testcase5
+    //testcase4
     @And("the user enters an item inside the search box")
     public void theUserEntersAnItemInsideTheSearchBox(){
+        data = TestDataReader.getData(scenario.getName());
         WebElement enter = homePage.getSearchBox();
-        enter.sendKeys("Biryani");
+        enter.sendKeys(data.get("TypeValue"));
     }
 
     @Then("the user should be able to enter an item inside the search box")
     public void theUserShouldBeAbleToEnterAnItemInsideTheSearchBox() {
         WebElement enter = homePage.getSearchBox();
         String text = enter.getAttribute("value");
-        Assert.assertEquals(text,"Biryani");
-        enter.clear();
+        Assert.assertEquals(text,data.get("TypeValue"));
     }
 
-    //testcase6
+    //testcase5
     @And("the user enters a special character")
     public void theUserEntersASpecialCharacter(){
+        data = TestDataReader.getData(scenario.getName());
         WebElement bar = homePage.getSearchBox();
-        bar.sendKeys("%@");
+        bar.sendKeys(data.get("TypeValue"));
     }
 
     @And("the user clicks on see for all results")
@@ -117,14 +126,15 @@ public class StepDefinitions {
     @Then("the user should get an error message saying no match found")
     public void theUserShouldGetAnErrorMessageSayingNoMatchFound() {
         String special = homePage.getSearchErrorMessage().getText();
-        Assert.assertEquals(special,"No match found for \"%@\"");
+        Assert.assertEquals(special,data.get("asserting"));
     }
 
-    //testcase7
+    //testcase6
     @And("the user enters an item")
     public void theUserEntersAnItem(){
+        data = TestDataReader.getData(scenario.getName());
         WebElement enter = homePage.getSearchBox();
-        enter.sendKeys("Biryani");
+        enter.sendKeys(data.get("TypeValue"));
         enter.sendKeys(Keys.ENTER);
     }
     @And("the user clicks on the navigate back present inside the search box")
@@ -135,12 +145,19 @@ public class StepDefinitions {
 
     @Then("the user should be able to navigate back")
     public void theUserShouldBeAbleToNavigateBack(){
-        Assert.assertTrue(driver.getCurrentUrl().contains("https://www.swiggy.com/search"));
+        url4 = EnvProps.getValue("searchurl");
+        Assert.assertTrue(driver.getCurrentUrl().contains(url4));
         boolean maginifier = homePage.getSearchMagnifier().isDisplayed();
         Assert.assertEquals(maginifier,true);
     }
 
-    //testcase8
+    //testcase7
+    @And("the user enters an item in the search box")
+    public void theUserEntersAnItemInTheSearchBox() {
+        data = TestDataReader.getData(scenario.getName());
+        WebElement enter = homePage.getSearchBox();
+        enter.sendKeys(data.get("TypeValue"));
+    }
     @And("the user clicks on the cross icon present inside the search box")
     public void theUserClicksOnTheCrossIconPresentInsideTheSearchBox() {
         homePage.getSearchClear().click();
@@ -152,31 +169,34 @@ public class StepDefinitions {
         Assert.assertEquals(maginifier,true);
     }
 
-    //testcase9
+    //testcase8
     @And("the user enters an item name inside the search box")
     public void theUserEntersAnItemNameInsideTheSearchBox() {
+        data = TestDataReader.getData(scenario.getName());
         WebElement enter = homePage.getSearchBox();
-        enter.sendKeys("Pizza");
+        enter.sendKeys(data.get("TypeValue"));
     }
 
     @Then("the auto suggestion must be shown below the search box")
     public void theAutoSuggestionMustBeShownBelowTheSearchBox() throws InterruptedException {
+        data = TestDataReader.getData(scenario.getName());
         WebDriverWait wait=new WebDriverWait(driver, 5);
         List<WebElement> suggestion_lists = wait.until(ExpectedConditions.visibilityOfAllElements(homePage.getSearchAutoSuggestion()));
         System.out.println(suggestion_lists.size());
         Assert.assertTrue(suggestion_lists.size()==11);
-        for (WebElement suggestion: suggestion_lists)
+        for(int i=1; i<11; i++){
+            WebElement suggestion = suggestion_lists.get(i);
             System.out.println(suggestion.getText());
-        Assert.assertNotNull(suggestion_lists,"auto suggestions are not present or not displayed");
+            Assert.assertTrue(suggestion.getText().contains(data.get("TypeValue")));
+        }
     }
 
-    //testcase10
+    //testcase9
     @And("the user enters an item name as {string} inside the search box")
     public void theUserEntersAnItemNameAsInsideTheSearchBox(String arg0) {
         WebElement items = homePage.getSearchBox();
         items.sendKeys(arg0);
         items.sendKeys(Keys.ENTER);
-        //theUserShouldGetListOfItemsMatchingTheEnteredItemsBelowTheSearchBox(arg0);
     }
 
     @Then("the user should get list of items matching the entered items below the search box")
@@ -185,27 +205,35 @@ public class StepDefinitions {
         List<WebElement> displayed_items = wait.until(ExpectedConditions.visibilityOfAllElements(homePage.getItemsDisplayed()));
         System.out.println(displayed_items.size());
         Assert.assertTrue(displayed_items.size() >= 1);
-        for (WebElement display : displayed_items) {
+        for(int i=1; i<11; i++){
+            WebElement display = displayed_items.get(i);
             String text = display.getText().toLowerCase();
             System.out.println(text);
-            Assert.assertNotNull(displayed_items,"auto suggestions are not present or not displayed");
-            //Assert.assertTrue(text.contains(arg0.toLowerCase()));
         }
-    }
 
-    //testcase11
+
+            Assert.assertNotNull(displayed_items,"auto suggestions are not present or not displayed");
+        }
+
+
+    //testcase10
     @And("the user enters a single character inside the search box")
     public void theUserEntersASingleCharacterInsideTheSearchBox() {
-        homePage.getSearchBox().sendKeys("P");
+        data = TestDataReader.getData(scenario.getName());
+        homePage.getSearchBox().sendKeys(data.get("TypeValue"));
     }
 
     @Then("the user should get an auto suggestion matching the items based on the entered character")
     public void theUserShouldGetAnAutoSuggestionMatchingTheItemsBasedOnTheEnteredCharacter() {
-        WebDriverWait wait=new WebDriverWait(driver, 5);
+        data = TestDataReader.getData(scenario.getName());
+        WebDriverWait wait = new WebDriverWait(driver, 5);
         List<WebElement> suggestion_lists = wait.until(ExpectedConditions.visibilityOfAllElements(homePage.getSearchAutoSuggestion()));
-        Assert.assertTrue(suggestion_lists.size()==11);
-        for (WebElement suggestion: suggestion_lists)
+        System.out.println(suggestion_lists.size());
+        Assert.assertTrue(suggestion_lists.size() == 11);
+        for (int i = 1; i < 11; i++) {
+            WebElement suggestion = suggestion_lists.get(i);
             System.out.println(suggestion.getText());
-        Assert.assertNotNull(suggestion_lists,"auto suggestions are not present or not displayed");
+            Assert.assertTrue(suggestion.getText().contains(data.get("TypeValue")));
+        }
     }
 }

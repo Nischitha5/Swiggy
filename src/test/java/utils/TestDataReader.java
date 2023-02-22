@@ -9,7 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 public class TestDataReader {
-private static HashMap<String, HashMap<String, String>> data;
+    private static HashMap<String, HashMap<String, String>> data;
     private static XSSFWorkbook workbook = null;
 
     public static void main(String[] args) {
@@ -21,7 +21,7 @@ private static HashMap<String, HashMap<String, String>> data;
         if (workbook == null) {
             FileInputStream fileInputStream = null;
             try {
-                fileInputStream = new FileInputStream("src/test/resources/swiggy_data.xlsx");
+                fileInputStream = new FileInputStream("src/test/resources/cucumber.xlsx");
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }
@@ -45,6 +45,7 @@ private static HashMap<String, HashMap<String, String>> data;
 
                     for (int j = 1; j < row.getLastCellNum(); j++) { //itterative through all column
                         String columnName = sheet.getRow(0).getCell(j).getStringCellValue();
+                        if(row.getCell(j)!=null)
                         rowData.put(columnName, row.getCell(j).getStringCellValue());//in the row data we are putting data
 
                     }
