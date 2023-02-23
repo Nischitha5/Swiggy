@@ -32,7 +32,7 @@ Background: User has to enter delivery location
     And the user enters a special character
     And the user clicks on see for all results
     Then the user should get an error message saying no match found
-@smoke
+
   #6
   Scenario: Verify that the user is able to navigate back inside the search box
     When the user clicks on the search
