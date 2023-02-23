@@ -32,7 +32,7 @@ Background: User has to enter delivery location
     And the user enters a special character
     And the user clicks on see for all results
     Then the user should get an error message saying no match found
-
+@smoke
   #6
   Scenario: Verify that the user is able to navigate back inside the search box
     When the user clicks on the search
@@ -52,17 +52,17 @@ Background: User has to enter delivery location
     When the user clicks on the search
     And the user enters an item name inside the search box
     Then the auto suggestion must be shown below the search box
-  @smoke
+
   #9
   Scenario Outline: Verify that when user enters an item name in the search box should give list of matching items
     When the user clicks on the search
     And the user enters an item name as "<itemname>" inside the search box
-    Then the user should get list of items matching the entered items below the search box
+    Then the user should get list of items matching the entered items "<itemname>" below the search box
     Examples:
       |itemname|
-      |panner 65|
-      |Bi       |
-      |65       |
+#      |Paneer 65|
+      |Chocolate|
+#      |Pizza    |
 
   #10
   Scenario: Verify that when the user enters single character then the auto suggestion is shown

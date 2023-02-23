@@ -17,6 +17,9 @@ import utils.TestDataReader;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Pattern;
+
+import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 
 public class StepDefinitions {
 
@@ -139,7 +142,8 @@ public class StepDefinitions {
     }
     @And("the user clicks on the navigate back present inside the search box")
     public void theuserclicksonthenavigatebackpresentinsidethesearchbox() throws InterruptedException {
-        Thread.sleep(2000);
+        WebDriverWait wait = new WebDriverWait(driver, 5);
+        wait.until(ExpectedConditions.visibilityOf(homePage.getSearchNavigateBack()));
         homePage.getSearchNavigateBack().click();
     }
 
@@ -199,21 +203,23 @@ public class StepDefinitions {
         items.sendKeys(Keys.ENTER);
     }
 
-    @Then("the user should get list of items matching the entered items below the search box")
-    public void theUserShouldGetListOfItemsMatchingTheEnteredItemsBelowTheSearchBox() {
+    @Then("the user should get list of items matching the entered items {string} below the search box")
+    public void theUserShouldGetListOfItemsMatchingTheEnteredItemsBelowTheSearchBox(String arg0) {
         WebDriverWait wait = new WebDriverWait(driver, 10);
         List<WebElement> displayed_items = wait.until(ExpectedConditions.visibilityOfAllElements(homePage.getItemsDisplayed()));
-        System.out.println(displayed_items.size());
-        Assert.assertTrue(displayed_items.size() >= 1);
-        for(int i=1; i<11; i++){
+        int sizeOfList = displayed_items.size();
+        System.out.println(sizeOfList);
+        Assert.assertTrue(sizeOfList >= 1);
+        for(int i=0; i<sizeOfList; i++){
             WebElement display = displayed_items.get(i);
             String text = display.getText().toLowerCase();
             System.out.println(text);
+            String arg0StartingThreeLetters = arg0.substring(0, 3);
+            System.out.println(arg0StartingThreeLetters);
+            Assert.assertTrue(text.contains(arg0StartingThreeLetters.toLowerCase()));
+        }
         }
 
-
-            Assert.assertNotNull(displayed_items,"auto suggestions are not present or not displayed");
-        }
 
 
     //testcase10
@@ -236,4 +242,5 @@ public class StepDefinitions {
             Assert.assertTrue(suggestion.getText().contains(data.get("TypeValue")));
         }
     }
+
 }

@@ -34,15 +34,17 @@ public class TestDataReader {
             XSSFSheet sheet = workbook.getSheet("Sheet1");  //copy the name from excel sheet(sheet1)
 
             data = new HashMap<>();
+            System.out.println(data);
             for (int i = 1; i <= sheet.getLastRowNum(); i++) { //itterative through all row
                 Row row = sheet.getRow(i);
+
                 if(row != null && row.getCell(0 )!= null) {
                     System.out.println(i);
                     String key = row.getCell(0).getStringCellValue();
-
+                    //System.out.println(key);
 
                     HashMap<String, String> rowData = new HashMap();
-
+                    //System.out.println(rowData);
                     for (int j = 1; j < row.getLastCellNum(); j++) { //itterative through all column
                         String columnName = sheet.getRow(0).getCell(j).getStringCellValue();
                         if(row.getCell(j)!=null)
