@@ -60,9 +60,9 @@ Background: User has to enter delivery location
     Then the user should get list of items matching the entered items "<itemname>" below the search box
     Examples:
       |itemname|
-#      |Paneer 65|
+      |Paneer 65|
       |Chocolate|
-#      |Pizza    |
+      |Pizza    |
 
   #10
   Scenario: Verify that when the user enters single character then the auto suggestion is shown
